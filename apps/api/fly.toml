@@ -1,0 +1,24 @@
+app = "talenscan-api"
+primary_region = "gru"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  API_PORT = "8080"
+  CORS_ORIGINS = "https://talenscan-web.tooxs-fperez.workers.dev,http://localhost:3000,http://localhost:3010"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[http_service.checks]]
+  grace_period = "15s"
+  interval = "15s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"

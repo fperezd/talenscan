@@ -1,0 +1,8 @@
+name = "talenscan-web"
+main = "worker.ts"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./out"
+binding = "ASSETS"

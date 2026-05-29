@@ -1,0 +1,28 @@
+export type PositionSpec = {
+  id: number;
+  search_mandate_id: number;
+  title: string;
+  executive_summary: string;
+  role_mission: string;
+  search_context: string;
+  key_responsibilities: string[];
+  expected_results: string[];
+  must_have_requirements: Array<Record<string, unknown>>;
+  nice_to_have_requirements: Array<Record<string, unknown>>;
+  technical_skills: string[];
+  functional_skills: string[];
+  leadership_skills: string[];
+  target_industries: string[];
+  target_company_types: string[];
+  equivalent_roles: string[];
+  market_mapping_hypothesis: string;
+  evaluation_criteria: string[];
+  interview_questions: string[];
+  scoring_model: Array<Record<string, unknown>>;
+  red_flags: string[];
+  validation_questions: string[];
+  generated_by_model: string;
+  prompt_version: string;
+  created_at: string;
+  updated_at: string;
+};

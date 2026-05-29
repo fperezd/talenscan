@@ -1,0 +1,21 @@
+export type CandidateEvaluation = {
+  id: number;
+  candidate_id: number;
+  position_spec_id: number;
+  total_score: number;
+  score_category: string;
+  recommendation: string;
+  executive_summary: string;
+  dimension_scores: Array<Record<string, unknown>>;
+  critical_gaps: Array<Record<string, unknown>>;
+  strengths: string[];
+  weaknesses: string[];
+  risks: string[];
+  interview_questions: string[];
+  supporting_evidence: string[];
+  final_verdict: string;
+  evaluation_json: Record<string, unknown>;
+  model_version: string;
+  prompt_version: string;
+  created_at: string;
+};

@@ -1,0 +1,12 @@
+pyproject.toml
+app/main.py
+talenscan_api.egg-info/PKG-INFO
+talenscan_api.egg-info/SOURCES.txt
+talenscan_api.egg-info/dependency_links.txt
+talenscan_api.egg-info/requires.txt
+talenscan_api.egg-info/top_level.txt
+tests/test_candidates_evaluations.py
+tests/test_health.py
+tests/test_mandates.py
+tests/test_models.py
+tests/test_position_specs.py

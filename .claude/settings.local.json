@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Usuario\\\\OneDrive - Tooxs\\\\Tooxs\\\\Code\\\\talenscan\" -Force)",
+      "Bash(python -c \"from app.main import app; print\\('OK', len\\(app.routes\\)\\)\")",
+      "Bash(npm install *)",
+      "Bash(python -m pip install \"openai>=1.55.0\")",
+      "Bash(python -c \"from app.main import app; from app.ai.position_spec_generator import generate_position_spec_payload; from app.ai.candidate_profile_parser import parse_candidate_profile; from app.ai.openai_client import get_openai_client; from app.core.config import settings; print\\('routes:', len\\(app.routes\\)\\); print\\('openai_enabled:', settings.openai_enabled\\); print\\('model:', settings.openai_model\\); print\\('client:', type\\(get_openai_client\\(\\)\\).__name__\\)\")"
+    ]
+  }
+}
