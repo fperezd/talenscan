@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, DoorOpen, FileText, GitCompare, KanbanSquare, Sparkles } from "lucide-react";
+import { ClipboardList, DoorOpen, FileText, GitCompare, KanbanSquare, Map, Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Tabs, type TabItem } from "@/components/ui/tabs";
@@ -13,6 +13,7 @@ const TAB_ICONS = {
   comparar: GitCompare,
   pipeline: KanbanSquare,
   "decision-room": DoorOpen,
+  "talent-market-map": Map,
 } as const;
 
 export function MandatoTabs() {
@@ -28,6 +29,7 @@ export function MandatoTabs() {
     { href: `${base}/comparar`, label: "Comparar candidatos", icon: TAB_ICONS.comparar },
     { href: `${base}/pipeline`, label: "Pipeline", icon: TAB_ICONS.pipeline },
     { href: `${base}/decision-room`, label: "Decision Room", icon: TAB_ICONS["decision-room"] },
+    { href: `${base}/talent-market-map`, label: "Market Map", icon: TAB_ICONS["talent-market-map"] },
   ].map((item) => ({
     ...item,
     active:

@@ -16,6 +16,7 @@ import { MandatoTabs } from "@/components/mandatos/mandato-tabs";
 import { PipelineBoard } from "@/components/pipeline/pipeline-board";
 import { PositionSpecClient } from "@/components/position-spec/position-spec-client";
 import { ClientShortlistPublicView } from "@/components/shortlist-cliente/client-shortlist-public-view";
+import { TalentMarketMap } from "@/components/talent-market-map/talent-market-map";
 
 /**
  * Next.js con output: 'export' dispara notFound() para cualquier URL que no
@@ -146,6 +147,22 @@ function matchDynamicRoute(pathname: string): React.ReactNode | null {
         />
         <MandatoTabs />
         <DecisionRoomBuilder mandateId={m[1]} />
+      </AppShell>
+    );
+  }
+
+  // /mandatos/{id}/talent-market-map
+  m = cleanPath.match(/^\/mandatos\/([^/]+)\/talent-market-map$/);
+  if (m) {
+    return (
+      <AppShell>
+        <PageHeader
+          eyebrow="Talent Market Map"
+          title="Mapa estratégico del mercado de talento."
+          description="Segmenta el mercado objetivo en industrias, empresas y cargos equivalentes, mide la cobertura de la búsqueda, detecta brechas repetidas y recibe recomendaciones para recalibrar el perfil."
+        />
+        <MandatoTabs />
+        <TalentMarketMap mandateId={m[1]} />
       </AppShell>
     );
   }
