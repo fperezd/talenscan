@@ -1,7 +1,10 @@
-﻿from fastapi import FastAPI
+﻿import logging
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+from app.core.security import ApiKeyMiddleware
 from app.routers.candidates import router as candidates_router
 from app.routers.client_shortlists import router as client_shortlists_router
 from app.routers.evaluations import router as evaluations_router
@@ -14,7 +17,12 @@ from app.routers.system import router as system_router
 from app.routers.talent_market_maps import router as talent_market_maps_router
 from app.routers.talent_profiles import router as talent_profiles_router
 
+logger = logging.getLogger("talenscan")
+
 app = FastAPI(title="Talenscan API", version="0.1.0")
+# API key (interino) se agrega ANTES que CORS para que CORS quede como
+# middleware externo y añada headers también a las respuestas 401.
+app.add_middleware(ApiKeyMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -22,6 +30,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def _log_runtime() -> None:
+    logger.info(
+        "Talenscan API arrancando · env=%s · api_key_auth=%s · openai=%s · apify=%s",
+        settings.api_env,
+        "on" if settings.api_key else "off",
+        "on" if settings.openai_enabled else "off",
+        "on" if settings.apify_enabled else "off",
+    )
 app.include_router(health_router)
 app.include_router(system_router)
 app.include_router(search_mandates_router)

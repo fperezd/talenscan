@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     cors_origins: str = "http://localhost:3000"
+    # Auth simple por API key compartida (header X-API-Key). Si queda vacía,
+    # la autenticación está DESACTIVADA (compatibilidad con el MVP actual).
+    # En prod: `fly secrets set API_KEY=...` y exponerla al frontend como
+    # NEXT_PUBLIC_API_KEY. No es auth por usuario, pero saca a la API de estar
+    # 100% abierta a internet/escáneres.
+    api_key: str = ""
     database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/talenscan"
 
     @field_validator("database_url", mode="before")

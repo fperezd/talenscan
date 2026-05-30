@@ -5,6 +5,7 @@ primary_region = "gru"
   dockerfile = "Dockerfile"
 
 [env]
+  API_ENV = "production"
   API_PORT = "8080"
   CORS_ORIGINS = "https://talenscan-web.tooxs-fperez.workers.dev,http://localhost:3000,http://localhost:3010"
 
