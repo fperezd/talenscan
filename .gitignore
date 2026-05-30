@@ -7,4 +7,5 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
-.DS_Store
+.DS_Store_boveda_spec.txt
+_extract_boveda.py

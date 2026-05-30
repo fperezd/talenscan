@@ -12,6 +12,7 @@ from app.routers.reports import router as reports_router
 from app.routers.search_mandates import router as search_mandates_router
 from app.routers.system import router as system_router
 from app.routers.talent_market_maps import router as talent_market_maps_router
+from app.routers.talent_profiles import router as talent_profiles_router
 
 app = FastAPI(title="Talenscan API", version="0.1.0")
 app.add_middleware(
@@ -31,3 +32,4 @@ app.include_router(pipeline_router)
 app.include_router(reports_router)
 app.include_router(client_shortlists_router)
 app.include_router(talent_market_maps_router)
+app.include_router(talent_profiles_router)
