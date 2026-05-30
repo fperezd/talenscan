@@ -55,6 +55,19 @@ class Settings(BaseSettings):
     decision_room_secret: str = "decision-room-dev-secret-change-me"
     decision_room_session_ttl_seconds: int = 60 * 60 * 4  # 4h por sesión validada
 
+    # Auth gestionada (Clerk). Si clerk_secret_key está vacía, la verificación
+    # de JWT queda inactiva (compatibilidad MVP). En prod: fly secrets.
+    clerk_secret_key: str = ""
+    clerk_jwks_url: str = ""  # https://<tu-frontend-api>.clerk.accounts.dev/.well-known/jwks.json
+    clerk_issuer: str = ""
+    # Dominios de consumo rechazados para "solo cuentas empresariales".
+    consumer_email_domains: str = (
+        "gmail.com,googlemail.com,outlook.com,hotmail.com,live.com,msn.com,"
+        "yahoo.com,yahoo.es,yahoo.com.mx,ymail.com,icloud.com,me.com,mac.com,"
+        "aol.com,proton.me,protonmail.com,gmx.com,gmx.es,yandex.com,yandex.ru,"
+        "qq.com,163.com,126.com,hotmail.es,outlook.es,live.cl"
+    )
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     @property
@@ -68,6 +81,14 @@ class Settings(BaseSettings):
     @property
     def apify_enabled(self) -> bool:
         return bool(self.apify_token)
+
+    @property
+    def clerk_enabled(self) -> bool:
+        return bool(self.clerk_secret_key and self.clerk_jwks_url)
+
+    @property
+    def consumer_email_domains_set(self) -> set[str]:
+        return {d.strip().lower() for d in self.consumer_email_domains.split(",") if d.strip()}
 
 
 settings = Settings()

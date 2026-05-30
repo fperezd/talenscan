@@ -1,0 +1,55 @@
+"""Multi-tenancy: Organization (empresa) y User.
+
+Espejo local de las entidades de Clerk (org/user), para poder scopear datos por
+organización y guardar metadata propia. La verificación de identidad la hace
+Clerk; estas tablas son la proyección local + el grafo de pertenencia.
+"""
+
+from datetime import datetime
+
+from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import Base
+
+_BigPk = lambda: BigInteger().with_variant(Integer, "sqlite")  # noqa: E731
+
+USER_ROLES = ("owner", "admin", "member")
+
+
+class Organization(Base):
+    __tablename__ = "organizations"
+    __table_args__ = (UniqueConstraint("clerk_org_id", name="uq_org_clerk_id"),)
+
+    id: Mapped[int] = mapped_column(_BigPk(), primary_key=True, autoincrement=True)
+    clerk_org_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    primary_domain: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    plan: Mapped[str] = mapped_column(String(40), nullable=False, default="free")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = (UniqueConstraint("clerk_user_id", name="uq_user_clerk_id"),)
+
+    id: Mapped[int] = mapped_column(_BigPk(), primary_key=True, autoincrement=True)
+    clerk_user_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    organization_id: Mapped[int | None] = mapped_column(
+        ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    email: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+    full_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    role: Mapped[str] = mapped_column(String(20), nullable=False, default="member")
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
