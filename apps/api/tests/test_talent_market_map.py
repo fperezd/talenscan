@@ -669,6 +669,26 @@ def test_export_summary_plaintext(client, session_factory, monkeypatch):
     assert "Falabella" in text  # empresa generada
 
 
+def test_list_all_maps_summary(client, session_factory):
+    mandate_id, _ = _seed_mandate_with_spec(session_factory)
+    map_id = client.get(f"/api/mandatos/{mandate_id}/talent-market-map").json()["id"]
+    client.post(
+        f"/api/talent-market-maps/{map_id}/segments",
+        json={"name": "Retail", "segment_type": "primary"},
+    )
+
+    rows = client.get("/api/talent-market-maps").json()
+    assert isinstance(rows, list) and len(rows) == 1
+    row = rows[0]
+    assert row["id"] == map_id
+    assert row["search_mandate_id"] == mandate_id
+    assert row["client_name"] == "ACME Corp"
+    assert row["target_role"] == "Gerente Comercial"
+    assert row["segments_count"] == 1
+    assert "coverage_pct" in row
+    assert "pending_recommendations" in row
+
+
 def test_archive_map(client, session_factory):
     mandate_id, _ = _seed_mandate_with_spec(session_factory)
     map_id = client.get(f"/api/mandatos/{mandate_id}/talent-market-map").json()["id"]

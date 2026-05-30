@@ -99,6 +99,19 @@ export type RecalibrationRecommendation = {
   created_at: string;
 };
 
+export type TalentMarketMapSummary = {
+  id: number;
+  search_mandate_id: number;
+  status: MapStatus;
+  coverage_pct: number;
+  pending_recommendations: number;
+  segments_count: number;
+  companies_count: number;
+  generated_at: string | null;
+  client_name: string | null;
+  target_role: string | null;
+};
+
 export type MapCandidate = {
   candidate_id: number;
   full_name: string;

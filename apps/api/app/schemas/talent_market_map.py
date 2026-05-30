@@ -226,6 +226,19 @@ class EquivalentRoleUpdatePayload(BaseModel):
     industries: list[str] | None = None
 
 
+class TalentMarketMapSummary(BaseModel):
+    id: int
+    search_mandate_id: int
+    status: MapStatus
+    coverage_pct: int
+    pending_recommendations: int
+    segments_count: int
+    companies_count: int
+    generated_at: datetime | None
+    client_name: str | None
+    target_role: str | None
+
+
 class MapCandidateRead(BaseModel):
     candidate_id: int
     full_name: str

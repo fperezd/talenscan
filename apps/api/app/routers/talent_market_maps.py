@@ -44,6 +44,7 @@ from app.schemas.talent_market_map import (
     SegmentReorderPayload,
     SegmentUpdatePayload,
     TalentMarketMapRead,
+    TalentMarketMapSummary,
 )
 from app.services.talent_market_map_service import TalentMarketMapService
 
@@ -176,6 +177,14 @@ def _serialize(service: TalentMarketMapService, map_) -> dict:
 
 
 # --- Map maestro -----------------------------------------------------------
+
+
+@router.get(
+    "/api/talent-market-maps",
+    response_model=list[TalentMarketMapSummary],
+)
+def list_maps(db: Session = Depends(get_db)) -> list[dict]:
+    return TalentMarketMapService(db).list_all_summaries()
 
 
 @router.get(

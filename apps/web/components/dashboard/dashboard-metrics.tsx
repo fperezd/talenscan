@@ -5,6 +5,7 @@ import {
   ClipboardList,
   DoorOpen,
   FileBarChart,
+  Map as MapIcon,
   Sparkles,
   TrendingUp,
   Users,
@@ -17,6 +18,10 @@ import type { Candidate, CandidateDocument } from "@/types/candidate";
 import type { CandidateEvaluation } from "@/types/evaluation";
 import type { SearchMandate } from "@/types/search-mandate";
 import type { ClientShortlist, DecisionRoomStatus } from "@/types/shortlist";
+import {
+  MAP_STATUS_LABELS,
+  type TalentMarketMapSummary,
+} from "@/types/talent-market-map";
 
 type Metrics = {
   activeMandates: number;
@@ -27,6 +32,7 @@ type Metrics = {
   recentMandates: SearchMandate[];
   recentEvaluations: Array<CandidateEvaluation & { candidate?: Candidate }>;
   rooms: ClientShortlist[];
+  marketMaps: TalentMarketMapSummary[];
 };
 
 const INITIAL_METRICS: Metrics = {
@@ -38,6 +44,7 @@ const INITIAL_METRICS: Metrics = {
   recentMandates: [],
   recentEvaluations: [],
   rooms: [],
+  marketMaps: [],
 };
 
 const ROOM_STATUS_LABEL: Record<DecisionRoomStatus, string> = {
@@ -85,11 +92,12 @@ export function DashboardMetrics() {
     async function load() {
       setLoading(true);
       try {
-        const [mandates, candidates, evaluations, rooms] = await Promise.all([
+        const [mandates, candidates, evaluations, rooms, marketMaps] = await Promise.all([
           apiFetch<SearchMandate[]>("/api/mandatos").catch(() => []),
           apiFetch<Candidate[]>("/api/candidatos").catch(() => []),
           apiFetch<CandidateEvaluation[]>("/api/evaluaciones").catch(() => []),
           apiFetch<ClientShortlist[]>("/api/shortlists").catch(() => []),
+          apiFetch<TalentMarketMapSummary[]>("/api/talent-market-maps").catch(() => []),
         ]);
 
         // Documentos no tienen endpoint "list-all" así que asumimos
@@ -131,6 +139,7 @@ export function DashboardMetrics() {
           recentMandates,
           recentEvaluations,
           rooms,
+          marketMaps,
         });
       } catch (loadError) {
         console.error(loadError);
@@ -308,6 +317,62 @@ export function DashboardMetrics() {
           </p>
         )}
       </section>
+
+      {metrics.marketMaps.length > 0 ? (
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-blueSoft text-brand-blue">
+                <MapIcon className="h-4 w-4" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-brand-black">Talent Market Maps</h3>
+                <p className="text-xs text-brand-grayMid">
+                  Mapas de mercado por búsqueda y recomendaciones de recalibración pendientes.
+                </p>
+              </div>
+            </div>
+            <span className="rounded-full bg-brand-blueSoft px-2 py-0.5 text-[11px] font-semibold text-brand-blue">
+              {metrics.marketMaps.reduce((acc, m) => acc + m.pending_recommendations, 0)} recomendaciones
+            </span>
+          </div>
+
+          <ul className="mt-4 space-y-2">
+            {metrics.marketMaps
+              .slice()
+              .sort((a, b) => b.pending_recommendations - a.pending_recommendations)
+              .slice(0, 5)
+              .map((m) => (
+                <li key={m.id}>
+                  <a
+                    href={`/mandatos/${m.search_mandate_id}/talent-market-map`}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/40 p-3 transition hover:border-brand-blue/40"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-brand-black">
+                        {m.target_role || "Cargo"}
+                        {m.client_name ? ` · ${m.client_name}` : ""}
+                      </p>
+                      <p className="text-xs text-brand-grayMid">
+                        {m.segments_count} segmentos · {m.companies_count} empresas · cobertura {m.coverage_pct}%
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      {m.pending_recommendations > 0 ? (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                          {m.pending_recommendations} pendientes
+                        </span>
+                      ) : null}
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-brand-grayMid ring-1 ring-slate-200">
+                        {MAP_STATUS_LABELS[m.status]}
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="grid gap-5 xl:grid-cols-2">
         <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">

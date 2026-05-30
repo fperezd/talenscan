@@ -62,6 +62,32 @@ class TalentMarketMapService:
             )
         ).first()
 
+    def list_all_summaries(self) -> list[dict[str, Any]]:
+        """Resumen global de todos los mapas (para el dashboard)."""
+        maps = list(self.db.scalars(select(TalentMarketMap)).all())
+        out: list[dict[str, Any]] = []
+        for m in maps:
+            mandate = self.db.get(SearchMandate, m.search_mandate_id)
+            recs = self.list_recommendations(m.id)
+            coverage = self.compute_coverage(m.search_mandate_id, m.id)
+            out.append(
+                {
+                    "id": m.id,
+                    "search_mandate_id": m.search_mandate_id,
+                    "status": m.status,
+                    "coverage_pct": coverage["coverage_pct"],
+                    "pending_recommendations": sum(
+                        1 for r in recs if r.status == "suggested"
+                    ),
+                    "segments_count": len(self.list_segments(m.id)),
+                    "companies_count": len(self.list_companies(m.id)),
+                    "generated_at": m.generated_at,
+                    "client_name": mandate.client_name if mandate else None,
+                    "target_role": mandate.target_role if mandate else None,
+                }
+            )
+        return out
+
     def get_or_create_for_mandate(self, mandate_id: int) -> TalentMarketMap:
         mandate = self.db.get(SearchMandate, mandate_id)
         if mandate is None:
