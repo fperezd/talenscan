@@ -226,6 +226,19 @@ class EquivalentRoleUpdatePayload(BaseModel):
     industries: list[str] | None = None
 
 
+class MapCandidateRead(BaseModel):
+    candidate_id: int
+    full_name: str
+    current_company: str | None
+    current_position: str | None
+    evaluation_score: int | None
+    score_category: str | None
+    auto_company_id: int | None
+    segment_id: int | None
+    target_company_id: int | None
+    equivalent_role_id: int | None
+
+
 class CandidateAssignPayload(BaseModel):
     segment_id: int | None = None
     target_company_id: int | None = None

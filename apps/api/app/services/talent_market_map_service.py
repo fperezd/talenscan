@@ -775,3 +775,55 @@ class TalentMarketMapService:
         overrides = self.list_overrides(map_id)
         counter = Counter(o.equivalent_role_id for o in overrides if o.equivalent_role_id)
         return {r.id: counter.get(r.id, 0) for r in roles}
+
+    # --- Candidatos del mandato con su asignación ------------------------
+
+    def list_candidates_overview(
+        self, map_id: int, mandate_id: int
+    ) -> list[dict[str, Any]]:
+        """Lista candidatos del pipeline con su asignación actual al mapa.
+
+        Incluye `auto_company_id`: id de la target_company cuyo nombre coincide
+        con `candidate.current_company` (match automático), para que la UI pueda
+        mostrar la asociación derivada aunque no haya override manual.
+        """
+        pipeline_items, candidates_map, evaluations_map, _profiles = (
+            self.candidates_for_mandate(mandate_id)
+        )
+        overrides = {o.candidate_id: o for o in self.list_overrides(map_id)}
+        company_by_norm: dict[str, int] = {}
+        for co in self.list_companies(map_id):
+            company_by_norm.setdefault(_norm(co.name), co.id)
+
+        result: list[dict[str, Any]] = []
+        seen: set[int] = set()
+        for it in pipeline_items:
+            cid = it.candidate_id
+            if cid in seen:
+                continue
+            seen.add(cid)
+            cand = candidates_map.get(cid)
+            if cand is None:
+                continue
+            ev = evaluations_map.get(it.evaluation_id) if it.evaluation_id else None
+            override = overrides.get(cid)
+            auto_company_id = (
+                company_by_norm.get(_norm(cand.current_company))
+                if cand.current_company
+                else None
+            )
+            result.append(
+                {
+                    "candidate_id": cid,
+                    "full_name": cand.full_name,
+                    "current_company": cand.current_company,
+                    "current_position": cand.current_position,
+                    "evaluation_score": ev.total_score if ev else None,
+                    "score_category": ev.score_category if ev else None,
+                    "auto_company_id": auto_company_id,
+                    "segment_id": override.segment_id if override else None,
+                    "target_company_id": override.target_company_id if override else None,
+                    "equivalent_role_id": override.equivalent_role_id if override else None,
+                }
+            )
+        return result

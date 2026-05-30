@@ -37,6 +37,7 @@ from app.schemas.talent_market_map import (
     EquivalentRoleCreatePayload,
     EquivalentRoleUpdatePayload,
     GenerateMapPayload,
+    MapCandidateRead,
     MapUpdatePayload,
     RecommendationDecisionPayload,
     SegmentCreatePayload,
@@ -448,6 +449,18 @@ def decide_recommendation(
 
 
 # --- Candidates ------------------------------------------------------------
+
+
+@router.get(
+    "/api/talent-market-maps/{map_id}/candidates",
+    response_model=list[MapCandidateRead],
+)
+def list_map_candidates(map_id: int, db: Session = Depends(get_db)) -> list[dict]:
+    service = TalentMarketMapService(db)
+    map_ = service.get(map_id)
+    if map_ is None:
+        raise HTTPException(status_code=404, detail="Talent Market Map no encontrado")
+    return service.list_candidates_overview(map_id, map_.search_mandate_id)
 
 
 @router.post(

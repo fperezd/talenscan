@@ -588,6 +588,43 @@ def test_candidate_assignment_and_company_counts(client, session_factory):
     client.delete(f"/api/talent-market-maps/{map_id}/candidates/{cand_id}/assign")
 
 
+def test_list_candidates_overview(client, session_factory):
+    mandate_id, spec_id = _seed_mandate_with_spec(session_factory)
+    map_id = client.get(f"/api/mandatos/{mandate_id}/talent-market-map").json()["id"]
+
+    cand_id, _ = _add_candidate_with_eval(
+        session_factory, mandate_id, spec_id, name="Auto Match", company="Falabella", score=82
+    )
+    # Empresa target con mismo nombre → debe reportarse como auto_company_id
+    co = client.post(
+        f"/api/talent-market-maps/{map_id}/companies",
+        json={"name": "Falabella", "industry": "Retail"},
+    ).json()
+    company_id = next(c for c in co["companies"] if c["name"] == "Falabella")["id"]
+
+    overview = client.get(f"/api/talent-market-maps/{map_id}/candidates").json()
+    assert len(overview) == 1
+    row = overview[0]
+    assert row["candidate_id"] == cand_id
+    assert row["full_name"] == "Auto Match"
+    assert row["evaluation_score"] == 82
+    assert row["auto_company_id"] == company_id
+    assert row["segment_id"] is None  # sin override aún
+
+    # Tras asignar manualmente a un segmento, aparece en el override
+    seg = client.post(
+        f"/api/talent-market-maps/{map_id}/segments",
+        json={"name": "Retail directo", "segment_type": "primary"},
+    ).json()
+    seg_id = seg["segments"][0]["id"]
+    client.post(
+        f"/api/talent-market-maps/{map_id}/candidates/{cand_id}/assign",
+        json={"segment_id": seg_id},
+    )
+    overview2 = client.get(f"/api/talent-market-maps/{map_id}/candidates").json()
+    assert overview2[0]["segment_id"] == seg_id
+
+
 def test_coverage_stats(client, session_factory):
     mandate_id, spec_id = _seed_mandate_with_spec(session_factory)
     map_id = client.get(f"/api/mandatos/{mandate_id}/talent-market-map").json()["id"]

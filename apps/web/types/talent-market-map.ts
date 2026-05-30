@@ -99,6 +99,19 @@ export type RecalibrationRecommendation = {
   created_at: string;
 };
 
+export type MapCandidate = {
+  candidate_id: number;
+  full_name: string;
+  current_company: string | null;
+  current_position: string | null;
+  evaluation_score: number | null;
+  score_category: string | null;
+  auto_company_id: number | null;
+  segment_id: number | null;
+  target_company_id: number | null;
+  equivalent_role_id: number | null;
+};
+
 export type CoverageStats = {
   candidates_identified: number;
   candidates_loaded: number;

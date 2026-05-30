@@ -38,6 +38,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { API_BASE_URL, apiFetch } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { CandidatesSidePanel } from "@/components/talent-market-map/candidates-side-panel";
 import {
   CLOSENESS_LABELS,
   COMPANY_COVERAGE_LABELS,
@@ -103,6 +104,7 @@ export function TalentMarketMap({ mandateId }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("resumen");
+  const [assignOpen, setAssignOpen] = useState(false);
 
   async function reload() {
     setError(null);
@@ -180,7 +182,12 @@ export function TalentMarketMap({ mandateId }: Props) {
 
   return (
     <div className="space-y-5">
-      <MapHeader map={map} generating={generating} onGenerate={generate} />
+      <MapHeader
+        map={map}
+        generating={generating}
+        onGenerate={generate}
+        onOpenAssign={() => setAssignOpen(true)}
+      />
 
       {error ? (
         <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs text-rose-700">
@@ -225,6 +232,10 @@ export function TalentMarketMap({ mandateId }: Props) {
       {activeTab === "cargos" ? <CargosTab map={map} onMap={setMap} /> : null}
       {activeTab === "brechas" ? <BrechasTab map={map} onMap={setMap} /> : null}
       {activeTab === "recalibracion" ? <RecalibracionTab map={map} onMap={setMap} /> : null}
+
+      {assignOpen ? (
+        <CandidatesSidePanel map={map} onMap={setMap} onClose={() => setAssignOpen(false)} />
+      ) : null}
     </div>
   );
 }
@@ -297,10 +308,12 @@ function MapHeader({
   map,
   generating,
   onGenerate,
+  onOpenAssign,
 }: {
   map: TalentMarketMapType;
   generating: boolean;
   onGenerate: () => Promise<void>;
+  onOpenAssign: () => void;
 }) {
   const [copying, setCopying] = useState(false);
   const cov = map.coverage;
@@ -371,6 +384,14 @@ function MapHeader({
           >
             {copying ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ClipboardCopy className="h-3.5 w-3.5" />}
             Copiar resumen
+          </button>
+          <button
+            type="button"
+            onClick={onOpenAssign}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-brand-grayMid transition hover:border-brand-blue/40 hover:text-brand-black"
+          >
+            <Users className="h-3.5 w-3.5" />
+            Asignar candidatos
           </button>
         </div>
       </div>
