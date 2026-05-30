@@ -10,6 +10,7 @@ import {
   Settings,
   Sparkles,
   Users,
+  Vault,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +23,7 @@ const items = [
   { href: "/mandatos", label: "Mandatos", icon: ClipboardList },
   { href: "/pipeline", label: "Pipeline", icon: KanbanSquare },
   { href: "/candidatos", label: "Candidatos", icon: Users },
+  { href: "/talentos", label: "Bóveda de Talento", icon: Vault },
   { href: "/evaluaciones", label: "Evaluaciones", icon: Sparkles },
   { href: "/reportes", label: "Reportes", icon: FileBarChart },
   { href: "/configuracion", label: "Configuración", icon: Settings },

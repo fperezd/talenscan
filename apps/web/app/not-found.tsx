@@ -17,6 +17,7 @@ import { PipelineBoard } from "@/components/pipeline/pipeline-board";
 import { PositionSpecClient } from "@/components/position-spec/position-spec-client";
 import { ClientShortlistPublicView } from "@/components/shortlist-cliente/client-shortlist-public-view";
 import { TalentMarketMap } from "@/components/talent-market-map/talent-market-map";
+import { TalentProfileDetail } from "@/components/talentos/talent-profile-detail";
 
 /**
  * Next.js con output: 'export' dispara notFound() para cualquier URL que no
@@ -197,6 +198,21 @@ function matchDynamicRoute(pathname: string): React.ReactNode | null {
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
           <MandatoDetailClient mandateId={m[1]} />
         </section>
+      </AppShell>
+    );
+  }
+
+  // /talentos/{id}
+  m = cleanPath.match(/^\/talentos\/([^/]+)$/);
+  if (m) {
+    return (
+      <AppShell>
+        <PageHeader
+          eyebrow="Perfil Maestro de Talento"
+          title="Ficha de talento"
+          description="Historial consolidado de experiencia, evaluaciones, procesos, notas y trazabilidad del talento."
+        />
+        <TalentProfileDetail talentId={m[1]} />
       </AppShell>
     );
   }

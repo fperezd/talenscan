@@ -20,6 +20,7 @@ const REWRITES: Array<[RegExp, string]> = [
   [/^\/mandatos\/([^/]+)\/talent-market-map\/?$/, "/mandatos/demo/talent-market-map"],
   [/^\/mandatos\/([^/]+)\/?$/, "/mandatos/demo"],
   [/^\/candidatos\/([^/]+)\/?$/, "/candidatos/demo"],
+  [/^\/talentos\/([^/]+)\/?$/, "/talentos/demo"],
   [/^\/evaluaciones\/([^/]+)\/?$/, "/evaluaciones/demo"],
   [/^\/shortlist-cliente\/([^/]+)\/?$/, "/shortlist-cliente/demo"],
 ];
