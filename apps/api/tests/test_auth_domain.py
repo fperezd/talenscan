@@ -5,13 +5,33 @@ from __future__ import annotations
 import pytest
 from starlette.requests import Request
 
+import base64
+import hashlib
+import hmac
+import json
+import time
+
 from app.core.auth import (
     MS_PERSONAL_TENANT,
+    AuthError,
     assert_business_account,
     get_current_principal,
     is_business_email,
+    principal_from_payload,
+    verify_supabase_jwt,
 )
 from app.core.config import settings
+
+
+def _mint_hs256(payload: dict, secret: str) -> str:
+    def b64(raw: bytes) -> str:
+        return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+    header = b64(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
+    body = b64(json.dumps(payload).encode())
+    signing_input = f"{header}.{body}".encode()
+    sig = b64(hmac.new(secret.encode(), signing_input, hashlib.sha256).digest())
+    return f"{header}.{body}.{sig}"
 
 
 @pytest.mark.parametrize(
@@ -71,7 +91,48 @@ def _req() -> Request:
     return Request({"type": "http", "method": "GET", "path": "/api/x", "headers": []})
 
 
-def test_principal_none_when_clerk_disabled(monkeypatch):
-    monkeypatch.setattr(settings, "clerk_secret_key", "")
-    monkeypatch.setattr(settings, "clerk_jwks_url", "")
+def test_principal_none_when_supabase_disabled(monkeypatch):
+    monkeypatch.setattr(settings, "supabase_jwt_secret", "")
     assert get_current_principal(_req()) is None
+
+
+def test_jwt_valid_signature_and_claims():
+    secret = "test-jwt-secret"
+    token = _mint_hs256(
+        {"sub": "user-uuid-1", "email": "ANA@tooxs.com", "aud": "authenticated", "exp": time.time() + 3600},
+        secret,
+    )
+    payload = verify_supabase_jwt(token, secret=secret, audience="authenticated")
+    principal = principal_from_payload(payload)
+    assert principal.auth_user_id == "user-uuid-1"
+    assert principal.email == "ana@tooxs.com"  # normalizado a minúsculas
+
+
+def test_jwt_tampered_signature_rejected():
+    secret = "test-jwt-secret"
+    token = _mint_hs256({"sub": "u", "email": "a@b.com", "exp": time.time() + 60}, secret)
+    tampered = token[:-4] + ("aaaa" if not token.endswith("aaaa") else "bbbb")
+    try:
+        verify_supabase_jwt(tampered, secret=secret, audience=None)
+        assert False, "debería rechazar firma adulterada"
+    except AuthError as exc:
+        assert exc.reason in ("firma_invalida", "token_malformado")
+
+
+def test_jwt_wrong_secret_rejected():
+    token = _mint_hs256({"sub": "u", "email": "a@b.com", "exp": time.time() + 60}, "secret-a")
+    try:
+        verify_supabase_jwt(token, secret="secret-b", audience=None)
+        assert False, "debería rechazar con otro secreto"
+    except AuthError as exc:
+        assert exc.reason == "firma_invalida"
+
+
+def test_jwt_expired_rejected():
+    secret = "s"
+    token = _mint_hs256({"sub": "u", "email": "a@b.com", "exp": time.time() - 10}, secret)
+    try:
+        verify_supabase_jwt(token, secret=secret, audience=None)
+        assert False, "debería rechazar token expirado"
+    except AuthError as exc:
+        assert exc.reason == "token_expirado"

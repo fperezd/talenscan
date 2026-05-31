@@ -19,21 +19,18 @@ def upgrade() -> None:
     op.create_table(
         "organizations",
         sa.Column("id", sa.BigInteger(), primary_key=True),
-        sa.Column("clerk_org_id", sa.String(length=80), nullable=True),
         sa.Column("name", sa.String(length=200), nullable=False),
         sa.Column("primary_domain", sa.String(length=200), nullable=True),
         sa.Column("plan", sa.String(length=40), nullable=False, server_default="free"),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
-        sa.UniqueConstraint("clerk_org_id", name="uq_org_clerk_id"),
     )
-    op.create_index("ix_organizations_clerk_org_id", "organizations", ["clerk_org_id"])
     op.create_index("ix_organizations_primary_domain", "organizations", ["primary_domain"])
 
     op.create_table(
         "users",
         sa.Column("id", sa.BigInteger(), primary_key=True),
-        sa.Column("clerk_user_id", sa.String(length=80), nullable=True),
+        sa.Column("auth_user_id", sa.String(length=80), nullable=True),
         sa.Column(
             "organization_id",
             sa.BigInteger(),
@@ -46,9 +43,9 @@ def upgrade() -> None:
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
-        sa.UniqueConstraint("clerk_user_id", name="uq_user_clerk_id"),
+        sa.UniqueConstraint("auth_user_id", name="uq_user_auth_id"),
     )
-    op.create_index("ix_users_clerk_user_id", "users", ["clerk_user_id"])
+    op.create_index("ix_users_auth_user_id", "users", ["auth_user_id"])
     op.create_index("ix_users_organization_id", "users", ["organization_id"])
     op.create_index("ix_users_email", "users", ["email"])
 
@@ -56,8 +53,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_index("ix_users_email", table_name="users")
     op.drop_index("ix_users_organization_id", table_name="users")
-    op.drop_index("ix_users_clerk_user_id", table_name="users")
+    op.drop_index("ix_users_auth_user_id", table_name="users")
     op.drop_table("users")
     op.drop_index("ix_organizations_primary_domain", table_name="organizations")
-    op.drop_index("ix_organizations_clerk_org_id", table_name="organizations")
     op.drop_table("organizations")

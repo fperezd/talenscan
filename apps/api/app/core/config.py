@@ -55,11 +55,13 @@ class Settings(BaseSettings):
     decision_room_secret: str = "decision-room-dev-secret-change-me"
     decision_room_session_ttl_seconds: int = 60 * 60 * 4  # 4h por sesión validada
 
-    # Auth gestionada (Clerk). Si clerk_secret_key está vacía, la verificación
-    # de JWT queda inactiva (compatibilidad MVP). En prod: fly secrets.
-    clerk_secret_key: str = ""
-    clerk_jwks_url: str = ""  # https://<tu-frontend-api>.clerk.accounts.dev/.well-known/jwks.json
-    clerk_issuer: str = ""
+    # Auth gestionada (Supabase Auth). Si supabase_jwt_secret está vacío, la
+    # verificación de JWT queda inactiva (compatibilidad MVP). En prod: fly secrets.
+    # Supabase firma los JWT de sesión con HS256 usando este secreto del proyecto.
+    supabase_jwt_secret: str = ""
+    supabase_url: str = ""  # https://<project-ref>.supabase.co
+    supabase_anon_key: str = ""  # se expone al frontend como NEXT_PUBLIC_SUPABASE_ANON_KEY
+    supabase_jwt_audience: str = "authenticated"
     # Dominios de consumo rechazados para "solo cuentas empresariales".
     consumer_email_domains: str = (
         "gmail.com,googlemail.com,outlook.com,hotmail.com,live.com,msn.com,"
@@ -83,8 +85,8 @@ class Settings(BaseSettings):
         return bool(self.apify_token)
 
     @property
-    def clerk_enabled(self) -> bool:
-        return bool(self.clerk_secret_key and self.clerk_jwks_url)
+    def supabase_enabled(self) -> bool:
+        return bool(self.supabase_jwt_secret)
 
     @property
     def consumer_email_domains_set(self) -> set[str]:

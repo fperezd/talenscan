@@ -1,8 +1,9 @@
 """Multi-tenancy: Organization (empresa) y User.
 
-Espejo local de las entidades de Clerk (org/user), para poder scopear datos por
-organización y guardar metadata propia. La verificación de identidad la hace
-Clerk; estas tablas son la proyección local + el grafo de pertenencia.
+Las organizaciones las modelamos nosotros (Supabase Auth no tiene concepto de
+org). `User` referencia el usuario de Supabase por `auth_user_id` (uuid de
+auth.users) y pertenece a una organización. La verificación de identidad la hace
+Supabase; estas tablas son la proyección local + el grafo de pertenencia.
 """
 
 from datetime import datetime
@@ -19,10 +20,8 @@ USER_ROLES = ("owner", "admin", "member")
 
 class Organization(Base):
     __tablename__ = "organizations"
-    __table_args__ = (UniqueConstraint("clerk_org_id", name="uq_org_clerk_id"),)
 
     id: Mapped[int] = mapped_column(_BigPk(), primary_key=True, autoincrement=True)
-    clerk_org_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     primary_domain: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     plan: Mapped[str] = mapped_column(String(40), nullable=False, default="free")
@@ -36,10 +35,10 @@ class Organization(Base):
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = (UniqueConstraint("clerk_user_id", name="uq_user_clerk_id"),)
+    __table_args__ = (UniqueConstraint("auth_user_id", name="uq_user_auth_id"),)
 
     id: Mapped[int] = mapped_column(_BigPk(), primary_key=True, autoincrement=True)
-    clerk_user_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    auth_user_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
     organization_id: Mapped[int | None] = mapped_column(
         ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, index=True
     )
