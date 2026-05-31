@@ -70,6 +70,16 @@ def test_public_and_health_exempt_even_with_key(client, monkeypatch):
     assert resp.status_code != 401
 
 
+def test_auth_endpoints_exempt_even_with_key(client, monkeypatch):
+    # Las puertas de entrada (login/registro/SSO callback) no deben requerir
+    # el API key — el callback OAuth lo invoca el navegador sin headers.
+    monkeypatch.setattr(security_settings, "api_key", "secret-123")
+    resp = client.post("/api/auth/login", json={"email": "x@empresa.com", "password": "nope"})
+    # 401 por credenciales, NO por API key → significa que pasó el middleware
+    assert resp.status_code == 401
+    assert "API key" not in resp.json().get("detail", "")
+
+
 def test_bearer_token_accepted(client, monkeypatch):
     monkeypatch.setattr(security_settings, "api_key", "secret-123")
     ok = client.get("/api/mandatos", headers={"Authorization": "Bearer secret-123"})

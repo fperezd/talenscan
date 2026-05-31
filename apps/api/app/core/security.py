@@ -20,7 +20,10 @@ from starlette.responses import JSONResponse
 from app.core.config import settings
 
 # Prefijos/paths exentos de API key.
-_EXEMPT_PREFIXES = ("/api/public/",)
+# /api/auth/ exento: son las puertas de entrada (login/registro/SSO). El
+# callback de OAuth lo invoca el navegador por redirección y no puede enviar
+# el header X-API-Key; bloquearlo rompería el SSO.
+_EXEMPT_PREFIXES = ("/api/public/", "/api/auth/")
 _EXEMPT_PATHS = {"/", "/health", "/docs", "/redoc", "/openapi.json"}
 
 
