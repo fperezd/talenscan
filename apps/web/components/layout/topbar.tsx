@@ -1,6 +1,8 @@
 import { ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
 
+import { LogoutButton } from "@/components/auth/logout-button";
+
 export function Topbar() {
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-6 py-3 backdrop-blur">
@@ -25,6 +27,7 @@ export function Topbar() {
           <Plus className="h-3.5 w-3.5" />
           Crear mandato
         </Link>
+        <LogoutButton />
       </div>
     </header>
   );
