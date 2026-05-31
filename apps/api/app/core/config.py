@@ -55,13 +55,21 @@ class Settings(BaseSettings):
     decision_room_secret: str = "decision-room-dev-secret-change-me"
     decision_room_session_ttl_seconds: int = 60 * 60 * 4  # 4h por sesión validada
 
-    # Auth gestionada (Supabase Auth). Si supabase_jwt_secret está vacío, la
-    # verificación de JWT queda inactiva (compatibilidad MVP). En prod: fly secrets.
-    # Supabase firma los JWT de sesión con HS256 usando este secreto del proyecto.
-    supabase_jwt_secret: str = ""
-    supabase_url: str = ""  # https://<project-ref>.supabase.co
-    supabase_anon_key: str = ""  # se expone al frontend como NEXT_PUBLIC_SUPABASE_ANON_KEY
-    supabase_jwt_audience: str = "authenticated"
+    # Auth self-hosted (en Fly, sobre el mismo Postgres). Nosotros emitimos y
+    # verificamos los JWT de sesión (HS256). En prod, setear auth_jwt_secret por
+    # fly secrets. El default dev permite que tests y local funcionen.
+    auth_jwt_secret: str = "talenscan-dev-jwt-secret-change-me"
+    auth_jwt_audience: str = "talenscan"
+    auth_jwt_ttl_seconds: int = 60 * 60 * 8  # 8h de sesión
+
+    # OAuth (SSO). Si el client_id está vacío, ese proveedor queda deshabilitado.
+    google_oauth_client_id: str = ""
+    google_oauth_client_secret: str = ""
+    microsoft_oauth_client_id: str = ""
+    microsoft_oauth_client_secret: str = ""
+    microsoft_oauth_tenant: str = "organizations"  # solo work/school, no personal
+    # Base para construir los redirect URIs de OAuth (backend público).
+    oauth_redirect_base: str = "http://localhost:8000"
     # Dominios de consumo rechazados para "solo cuentas empresariales".
     consumer_email_domains: str = (
         "gmail.com,googlemail.com,outlook.com,hotmail.com,live.com,msn.com,"
@@ -85,8 +93,12 @@ class Settings(BaseSettings):
         return bool(self.apify_token)
 
     @property
-    def supabase_enabled(self) -> bool:
-        return bool(self.supabase_jwt_secret)
+    def google_oauth_enabled(self) -> bool:
+        return bool(self.google_oauth_client_id and self.google_oauth_client_secret)
+
+    @property
+    def microsoft_oauth_enabled(self) -> bool:
+        return bool(self.microsoft_oauth_client_id and self.microsoft_oauth_client_secret)
 
     @property
     def consumer_email_domains_set(self) -> set[str]:

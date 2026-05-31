@@ -35,16 +35,21 @@ class Organization(Base):
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = (UniqueConstraint("auth_user_id", name="uq_user_auth_id"),)
+    __table_args__ = (UniqueConstraint("email", name="uq_user_email"),)
 
     id: Mapped[int] = mapped_column(_BigPk(), primary_key=True, autoincrement=True)
-    auth_user_id: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
     organization_id: Mapped[int | None] = mapped_column(
         ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, index=True
     )
     email: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
     full_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="member")
+    # Auth self-hosted: hash de contraseña (null si el usuario es solo-SSO).
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    email_verified: Mapped[bool] = mapped_column(default=False, nullable=False)
+    # SSO: proveedor ('google'|'microsoft'|None) y subject del proveedor.
+    oauth_provider: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    oauth_subject: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

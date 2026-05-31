@@ -1,17 +1,13 @@
-"""Autenticación de usuario (Supabase Auth) + verificación de cuenta empresarial.
+"""Autenticación self-hosted (en Fly, sobre el Postgres propio).
 
-- `is_business_email()` / `assert_business_account()`: regla "solo empresas"
-  (rechaza dominios de consumo; exige Workspace `hd` en Google y cuenta
-  work/school en Microsoft). Núcleo del requerimiento.
-- `verify_supabase_jwt()`: verifica el JWT de sesión de Supabase (HS256 con el
-  JWT secret del proyecto) sin dependencias externas (stdlib hmac/base64).
-- `get_current_principal`: dependencia FastAPI. Si Supabase no está configurado
-  (`settings.supabase_enabled` False), queda INERTE (devuelve None) para no
-  romper el MVP. Con secret configurado, exige y valida el Bearer token.
+- `is_business_email()` / `assert_business_account()`: regla "solo empresas".
+- `hash_password()` / `verify_password()`: scrypt de stdlib (sin dependencias).
+- `sign_session_jwt()` / `verify_session_jwt()`: emitimos y verificamos nuestros
+  propios JWT de sesión (HS256 con `auth_jwt_secret`).
+- `get_current_principal` / `require_principal`: dependencias FastAPI.
 
-Self-service: cualquier empresa se registra (SSO Google/Microsoft o
-email+password) vía Supabase; el backend valida el token y aplica la regla
-business-only. Las organizaciones las modelamos nosotros (tablas locales).
+Email+password está 100% acá. El SSO (Google/Microsoft) usa estas mismas
+piezas (assert_business_account + sign_session_jwt) desde el router de OAuth.
 """
 
 from __future__ import annotations
@@ -21,6 +17,7 @@ import binascii
 import hashlib
 import hmac
 import json
+import os
 import time
 from dataclasses import dataclass
 
@@ -29,6 +26,9 @@ from fastapi import HTTPException, Request
 from app.core.config import settings
 
 MS_PERSONAL_TENANT = "9188040d-6c67-4c5b-b112-36a304b66dad"
+_SCRYPT_N = 16384
+_SCRYPT_R = 8
+_SCRYPT_P = 1
 
 
 class AuthError(Exception):
@@ -39,9 +39,10 @@ class AuthError(Exception):
 
 @dataclass
 class Principal:
-    auth_user_id: str | None
+    user_id: int | None
     email: str
     org_db_id: int | None = None
+    role: str = "member"
 
 
 # --- Verificación cuenta empresarial ---------------------------------------
@@ -84,7 +85,42 @@ def assert_business_account(
     return True, None
 
 
-# --- Verificación JWT Supabase (HS256, stdlib) -----------------------------
+# --- Password hashing (scrypt, stdlib) -------------------------------------
+
+
+def hash_password(password: str) -> str:
+    salt = os.urandom(16)
+    dk = hashlib.scrypt(
+        password.encode("utf-8"), salt=salt, n=_SCRYPT_N, r=_SCRYPT_R, p=_SCRYPT_P, dklen=32
+    )
+    return f"scrypt${_SCRYPT_N}${_SCRYPT_R}${_SCRYPT_P}${salt.hex()}${dk.hex()}"
+
+
+def verify_password(password: str, stored: str | None) -> bool:
+    if not stored:
+        return False
+    try:
+        algo, n, r, p, salt_hex, hash_hex = stored.split("$")
+        if algo != "scrypt":
+            return False
+        dk = hashlib.scrypt(
+            password.encode("utf-8"),
+            salt=bytes.fromhex(salt_hex),
+            n=int(n),
+            r=int(r),
+            p=int(p),
+            dklen=len(bytes.fromhex(hash_hex)),
+        )
+        return hmac.compare_digest(dk, bytes.fromhex(hash_hex))
+    except (ValueError, TypeError):
+        return False
+
+
+# --- JWT (HS256, stdlib) — emitido y verificado por nosotros ---------------
+
+
+def _b64url_encode(raw: bytes) -> str:
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
 
 
 def _b64url_decode(segment: str) -> bytes:
@@ -95,12 +131,33 @@ def _b64url_decode(segment: str) -> bytes:
         raise AuthError("token_malformado") from exc
 
 
-def verify_supabase_jwt(token: str, *, secret: str | None = None, audience: str | None = None) -> dict:
-    """Valida firma HS256, expiración y audiencia. Devuelve el payload."""
-    secret = secret if secret is not None else settings.supabase_jwt_secret
-    audience = audience if audience is not None else settings.supabase_jwt_audience
-    if not secret:
-        raise AuthError("auth_no_configurada")
+def sign_session_jwt(
+    *, user_id: int, email: str, org_db_id: int | None, role: str = "member", ttl: int | None = None
+) -> str:
+    ttl = ttl if ttl is not None else settings.auth_jwt_ttl_seconds
+    now = int(time.time())
+    header = _b64url_encode(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
+    payload = _b64url_encode(
+        json.dumps(
+            {
+                "sub": str(user_id),
+                "email": email,
+                "org": org_db_id,
+                "role": role,
+                "aud": settings.auth_jwt_audience,
+                "iat": now,
+                "exp": now + ttl,
+            }
+        ).encode()
+    )
+    signing_input = f"{header}.{payload}".encode()
+    sig = _b64url_encode(
+        hmac.new(settings.auth_jwt_secret.encode(), signing_input, hashlib.sha256).digest()
+    )
+    return f"{header}.{payload}.{sig}"
+
+
+def verify_session_jwt(token: str) -> dict:
     parts = token.split(".")
     if len(parts) != 3:
         raise AuthError("token_malformado")
@@ -112,25 +169,27 @@ def verify_supabase_jwt(token: str, *, secret: str | None = None, audience: str 
     if header.get("alg") != "HS256":
         raise AuthError("alg_no_soportado")
     signing_input = f"{header_b64}.{payload_b64}".encode()
-    expected = hmac.new(secret.encode(), signing_input, hashlib.sha256).digest()
+    expected = hmac.new(settings.auth_jwt_secret.encode(), signing_input, hashlib.sha256).digest()
     if not hmac.compare_digest(expected, _b64url_decode(sig_b64)):
         raise AuthError("firma_invalida")
     try:
         payload = json.loads(_b64url_decode(payload_b64))
     except (json.JSONDecodeError, ValueError) as exc:
         raise AuthError("token_malformado") from exc
-    exp = payload.get("exp")
-    if exp is not None and time.time() > float(exp):
+    if payload.get("exp") is not None and time.time() > float(payload["exp"]):
         raise AuthError("token_expirado")
-    if audience and payload.get("aud") and payload.get("aud") != audience:
+    if payload.get("aud") != settings.auth_jwt_audience:
         raise AuthError("audiencia_invalida")
     return payload
 
 
 def principal_from_payload(payload: dict) -> Principal:
+    sub = payload.get("sub")
     return Principal(
-        auth_user_id=payload.get("sub"),
+        user_id=int(sub) if sub is not None and str(sub).isdigit() else None,
         email=(payload.get("email") or "").strip().lower(),
+        org_db_id=payload.get("org"),
+        role=payload.get("role") or "member",
     )
 
 
@@ -145,14 +204,19 @@ def _bearer(request: Request) -> str | None:
 
 
 def get_current_principal(request: Request) -> Principal | None:
-    """None si Supabase está desactivado (MVP). Si no, exige token válido."""
-    if not settings.supabase_enabled:
-        return None
+    """Principal del token si viene; None si no hay token. 401 si el token es inválido."""
     token = _bearer(request)
     if not token:
-        raise HTTPException(status_code=401, detail="Falta el token de sesión.")
+        return None
     try:
-        payload = verify_supabase_jwt(token)
+        return principal_from_payload(verify_session_jwt(token))
     except AuthError as exc:
         raise HTTPException(status_code=401, detail=f"Token inválido: {exc.reason}") from exc
-    return principal_from_payload(payload)
+
+
+def require_principal(request: Request) -> Principal:
+    """Para rutas protegidas: exige sesión válida (usar en el cutover P5)."""
+    principal = get_current_principal(request)
+    if principal is None:
+        raise HTTPException(status_code=401, detail="Autenticación requerida.")
+    return principal
