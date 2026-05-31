@@ -70,6 +70,8 @@ class Settings(BaseSettings):
     microsoft_oauth_tenant: str = "organizations"  # solo work/school, no personal
     # Base para construir los redirect URIs de OAuth (backend público).
     oauth_redirect_base: str = "http://localhost:8000"
+    # A dónde redirige el backend tras el SSO (frontend que recibe el token).
+    frontend_base_url: str = "https://talenscan-web.tooxs-fperez.workers.dev"
     # Dominios de consumo rechazados para "solo cuentas empresariales".
     consumer_email_domains: str = (
         "gmail.com,googlemail.com,outlook.com,hotmail.com,live.com,msn.com,"

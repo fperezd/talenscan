@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.security import ApiKeyMiddleware
 from app.routers.auth import router as auth_router
+from app.routers.auth_oauth import router as auth_oauth_router
 from app.routers.candidates import router as candidates_router
 from app.routers.client_shortlists import router as client_shortlists_router
 from app.routers.evaluations import router as evaluations_router
@@ -44,6 +45,7 @@ def _log_runtime() -> None:
     )
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(auth_oauth_router)
 app.include_router(system_router)
 app.include_router(search_mandates_router)
 app.include_router(position_specs_router)
