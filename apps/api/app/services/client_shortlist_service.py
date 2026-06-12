@@ -259,7 +259,7 @@ def _professional_summary(
         pieces.append(f"con {profile.total_years_experience} años de experiencia")
     if profile and profile.inferred_seniority:
         pieces.append(f"de nivel {profile.inferred_seniority}")
-    return " ".join(pieces) or "Candidato pre-seleccionado por Talenscan."
+    return " ".join(pieces) or "Candidato pre-seleccionado por TalentScan."
 
 
 def _headline(candidate: Candidate, profile: CandidateProfile | None) -> str:
@@ -321,7 +321,7 @@ class ClientShortlistService:
         shortlist = ClientShortlist(
             mandate_id=mandate_id,
             public_token=_generate_token(),
-            title=title or "Shortlist Talenscan",
+            title=title or "Shortlist TalentScan",
             message_to_client=message_to_client or "",
             intro_message=intro_message,
             show_scores=show_scores,

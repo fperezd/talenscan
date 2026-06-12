@@ -21,7 +21,7 @@ from app.routers.talent_profiles import router as talent_profiles_router
 
 logger = logging.getLogger("talenscan")
 
-app = FastAPI(title="Talenscan API", version="0.1.0")
+app = FastAPI(title="TalentScan API", version="0.1.0")
 # API key (interino) se agrega ANTES que CORS para que CORS quede como
 # middleware externo y añada headers también a las respuestas 401.
 app.add_middleware(ApiKeyMiddleware)
@@ -37,7 +37,7 @@ app.add_middleware(
 @app.on_event("startup")
 def _log_runtime() -> None:
     logger.info(
-        "Talenscan API arrancando · env=%s · api_key_auth=%s · openai=%s · apify=%s",
+        "TalentScan API arrancando · env=%s · api_key_auth=%s · openai=%s · apify=%s",
         settings.api_env,
         "on" if settings.api_key else "off",
         "on" if settings.openai_enabled else "off",

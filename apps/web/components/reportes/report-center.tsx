@@ -76,7 +76,7 @@ export function ReportCenter() {
       link.href = url;
       const safeName = candidateName.replace(/[^a-zA-Z0-9-_ñÑáéíóúÁÉÍÓÚ ]/g, "").trim();
       const extension = format === "word" ? "docx" : "pdf";
-      link.download = `Talenscan-${safeName || `evaluacion-${id}`}.${extension}`;
+      link.download = `TalentScan-${safeName || `evaluacion-${id}`}.${extension}`;
       document.body.appendChild(link);
       link.click();
       link.remove();

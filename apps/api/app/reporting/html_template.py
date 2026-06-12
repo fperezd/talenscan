@@ -16,7 +16,7 @@ REPORT_HTML_TEMPLATE = r"""<!DOCTYPE html>
     size: A4;
     margin: 18mm 16mm 22mm 16mm;
     @bottom-center {
-      content: "Talenscan · Evaluación 360 · " counter(page) " / " counter(pages);
+      content: "TalentScan · Evaluación 360 · " counter(page) " / " counter(pages);
       font-size: 8pt;
       color: #57575680;
       font-family: 'Helvetica', 'Arial', sans-serif;
@@ -439,7 +439,7 @@ REPORT_HTML_TEMPLATE = r"""<!DOCTYPE html>
     <div class="of">/ 100</div>
   </div>
   <div class="hero-info">
-    <p class="eyebrow">Evaluación 360 Talenscan</p>
+    <p class="eyebrow">Evaluación 360 TalentScan</p>
     <h1>{{ candidate_name }}</h1>
     <p style="color: var(--brand-gray); font-size: 10pt; margin-top: 2px;">
       {{ target_role }} · {{ client_name }}

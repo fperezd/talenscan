@@ -7,7 +7,7 @@ export default function Page() {
     <AppShell>
       <PageHeader
         eyebrow="Evaluaciones"
-        title="Evaluación 360 Talenscan"
+        title="Evaluación 360 TalentScan"
         description="Resultados de evaluación explicable: score 360, brechas críticas y recomendación ejecutiva."
       />
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">

@@ -1,4 +1,4 @@
-// Auth self-hosted (TalenScan API). Guarda el JWT de sesión en localStorage y
+// Auth self-hosted (TalentScan API). Guarda el JWT de sesión en localStorage y
 // expone helpers de login/registro/logout. Opt-in vía NEXT_PUBLIC_AUTH_ENABLED.
 
 import { API_BASE_URL, apiFetch } from "@/lib/api";

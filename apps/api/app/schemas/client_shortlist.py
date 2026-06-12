@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class ClientShortlistCreate(BaseModel):
-    title: str = Field(default="Shortlist Talenscan", max_length=200)
+    title: str = Field(default="Shortlist TalentScan", max_length=200)
     message_to_client: str = ""
     intro_message: str | None = None
     show_scores: bool = False

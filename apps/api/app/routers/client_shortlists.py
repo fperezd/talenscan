@@ -1,6 +1,6 @@
 """Rutas para Decision Room (alias técnico: client_shortlists).
 
-Admin (futuro: requerirá staff Talenscan; hoy sin auth como el resto del API):
+Admin (futuro: requerirá staff TalentScan; hoy sin auth como el resto del API):
     POST   /api/mandatos/{mandate_id}/shortlists
     GET    /api/mandatos/{mandate_id}/shortlists
     GET    /api/shortlists/{shortlist_id}
@@ -466,12 +466,12 @@ def _ensure_link_active(service: ClientShortlistService, shortlist) -> None:
     if link_status == "revoked":
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
-            detail="Este Decision Room fue revocado por Talenscan.",
+            detail="Este Decision Room fue revocado por TalentScan.",
         )
     if link_status == "expired":
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
-            detail="Este acceso expiró. Solicita un nuevo link a Talenscan.",
+            detail="Este acceso expiró. Solicita un nuevo link a TalentScan.",
         )
     if link_status == "closed":
         raise HTTPException(

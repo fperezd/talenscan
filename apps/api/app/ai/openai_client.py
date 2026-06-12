@@ -1,4 +1,4 @@
-"""Cliente compartido de OpenAI para Talenscan.
+"""Cliente compartido de OpenAI para TalentScan.
 
 Reglas:
 - Todas las llamadas IA viven en backend (ver AGENTS.md §5).

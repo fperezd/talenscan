@@ -199,7 +199,7 @@ function AccessGate({
       onValidated(body.session_token as string);
     } catch (caught) {
       console.error(caught);
-      setError("No fue posible conectar con Talenscan. Reintenta en unos minutos.");
+      setError("No fue posible conectar con TalentScan. Reintenta en unos minutos.");
     } finally {
       setSubmitting(false);
     }
@@ -209,7 +209,7 @@ function AccessGate({
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-soft">
         <div className="flex items-center gap-3 border-b border-slate-100 pb-5">
-          <img src="/logo-talenscan.png" alt="Talenscan" className="h-9 w-auto" />
+          <img src="/logo-talenscan.png" alt="TalentScan" className="h-9 w-auto" />
           <span className="text-xs text-brand-grayMid">·</span>
           <p className="text-[11px] uppercase tracking-wider text-brand-grayMid">
             Acceso privado
@@ -1570,7 +1570,7 @@ function DecisionRoomBody({
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <img src="/logo-talenscan.png" alt="Talenscan" className="h-10 w-auto" />
+            <img src="/logo-talenscan.png" alt="TalentScan" className="h-10 w-auto" />
             <span className="text-xs text-brand-grayMid">·</span>
             <p className="text-[11px] uppercase tracking-wider text-brand-grayMid">
               Decision Room confidencial
@@ -1733,7 +1733,7 @@ function DecisionRoomBody({
 
       <footer className="border-t border-slate-200 bg-white px-6 py-6 text-center text-xs text-brand-grayMid">
         <p>
-          Decision Room preparado por <strong className="text-brand-black">Talenscan</strong>. Tus
+          Decision Room preparado por <strong className="text-brand-black">TalentScan</strong>. Tus
           decisiones quedan registradas y disponibles para el consultor responsable. La información
           de los candidatos es confidencial.
         </p>
@@ -1794,7 +1794,7 @@ export function ClientShortlistPublicView({ token }: Props) {
       if (resolvedToken === "demo") {
         setLoading(false);
         setError(
-          "Esta es la vista de ejemplo del Decision Room. Talenscan te enviará un link único para acceder al room real."
+          "Esta es la vista de ejemplo del Decision Room. TalentScan te enviará un link único para acceder al room real."
         );
         setErrorCode(0);
         return;
@@ -1825,7 +1825,7 @@ export function ClientShortlistPublicView({ token }: Props) {
         setResponse(body);
       } catch (caught) {
         console.error(caught);
-        setError("No fue posible conectar con Talenscan. Reintenta en unos minutos.");
+        setError("No fue posible conectar con TalentScan. Reintenta en unos minutos.");
       } finally {
         setLoading(false);
       }

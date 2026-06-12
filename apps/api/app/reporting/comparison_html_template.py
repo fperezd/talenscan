@@ -17,7 +17,7 @@ COMPARISON_HTML_TEMPLATE = r"""<!DOCTYPE html>
     size: A4 landscape;
     margin: 14mm 12mm 18mm 12mm;
     @bottom-center {
-      content: "Talenscan · Comparativo de candidatos · " counter(page) " / " counter(pages);
+      content: "TalentScan · Comparativo de candidatos · " counter(page) " / " counter(pages);
       font-size: 7.5pt;
       color: #57575680;
       font-family: 'Helvetica', 'Arial', sans-serif;
@@ -395,7 +395,7 @@ COMPARISON_HTML_TEMPLATE = r"""<!DOCTYPE html>
 <div class="hero">
   <div class="hero-top">
     <div class="left">
-      <p class="eyebrow">Comparativo Talenscan · {{ candidates_count }} candidato{{ '' if candidates_count == 1 else 's' }}</p>
+      <p class="eyebrow">Comparativo TalentScan · {{ candidates_count }} candidato{{ '' if candidates_count == 1 else 's' }}</p>
       <h1>{{ mandate_title }}</h1>
       <p class="meta">
         <strong>{{ client_name }}</strong> · {{ target_role }} · {{ industry }} · {{ city }}, {{ country }}
@@ -617,7 +617,7 @@ COMPARISON_HTML_TEMPLATE = r"""<!DOCTYPE html>
 
 <div class="traceability">
   <strong>Nota de trazabilidad</strong><br/>
-  Informe comparativo generado por Talenscan a partir del perfil objetivo del cargo y las Evaluaciones 360 individuales de cada candidato. Debe ser revisado por el consultor responsable antes de ser compartido con el cliente. La conclusión ejecutiva del shortlist refleja el ranking algorítmico (score total + brechas críticas) y debe ser validada por el partner del mandato.
+  Informe comparativo generado por TalentScan a partir del perfil objetivo del cargo y las Evaluaciones 360 individuales de cada candidato. Debe ser revisado por el consultor responsable antes de ser compartido con el cliente. La conclusión ejecutiva del shortlist refleja el ranking algorítmico (score total + brechas críticas) y debe ser validada por el partner del mandato.
 </div>
 
 </body>

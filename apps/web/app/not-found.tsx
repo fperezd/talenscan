@@ -126,7 +126,7 @@ function matchDynamicRoute(pathname: string): React.ReactNode | null {
         <PageHeader
           eyebrow="Evaluar candidatos"
           title="Carga de CVs y Evaluación 360"
-          description="Sube CVs, genera el perfil estructurado del candidato y obtén la Evaluación 360 Talenscan."
+          description="Sube CVs, genera el perfil estructurado del candidato y obtén la Evaluación 360 TalentScan."
         />
         <MandatoTabs />
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
@@ -239,7 +239,7 @@ function matchDynamicRoute(pathname: string): React.ReactNode | null {
       <AppShell>
         <PageHeader
           eyebrow="Evaluación 360"
-          title="Evaluación 360 Talenscan"
+          title="Evaluación 360 TalentScan"
           description="Score explicable por dimensión, brechas críticas, evidencia del CV y preguntas sugeridas para entrevista."
         />
         <EvaluationDetailClient evaluationId={m[1]} />

@@ -74,7 +74,7 @@ export function Sidebar() {
       <div className="relative flex flex-col items-center bg-white px-3 pt-6 pb-5">
         <Link
           href="/"
-          aria-label="Ir al inicio de Talenscan"
+          aria-label="Ir al inicio de TalentScan"
           title="Ir al inicio"
           className={cn(
             "flex w-full items-center justify-center rounded-lg py-2 transition hover:bg-slate-50",
@@ -83,7 +83,7 @@ export function Sidebar() {
         >
           <img
             src="/logo-talenscan.png"
-            alt="Talenscan"
+            alt="TalentScan"
             className={cn(
               "w-auto transition-all duration-200",
               collapsed ? "h-12" : "h-40"
@@ -130,7 +130,7 @@ export function Sidebar() {
 
       {!collapsed ? (
         <div className="border-t border-slate-100 px-4 py-3">
-          <p className="text-[10px] uppercase tracking-wider text-brand-grayMid">Talenscan</p>
+          <p className="text-[10px] uppercase tracking-wider text-brand-grayMid">TalentScan</p>
           <p className="mt-0.5 text-[11px] text-brand-grayMid">MVP · v0.1</p>
         </div>
       ) : null}

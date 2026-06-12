@@ -64,7 +64,7 @@ def build_report_context(
         "onboarding_considerations": ai.get("onboarding_considerations", []),
         "compensation_signals": ai.get("compensation_signals", ""),
         "traceability_note": (
-            "Informe generado por Talenscan a partir del perfil objetivo del cargo, el perfil del "
+            "Informe generado por TalentScan a partir del perfil objetivo del cargo, el perfil del "
             "candidato y el modelo de evaluación 360. La evaluación debe ser revisada por el consultor "
             "responsable antes de ser compartida con el cliente."
         ),

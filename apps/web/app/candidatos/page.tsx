@@ -8,7 +8,7 @@ export default function Page() {
       <PageHeader
         eyebrow="Candidatos"
         title="Candidatos"
-        description="Consulta candidatos, perfiles estructurados y evaluaciones 360 Talenscan."
+        description="Consulta candidatos, perfiles estructurados y evaluaciones 360 TalentScan."
       />
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
         <CandidateHub />

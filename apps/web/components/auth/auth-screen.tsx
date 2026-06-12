@@ -7,8 +7,8 @@ export function AuthScreen({ initialError }: { onAuthed: () => void; initialErro
     <div className="flex min-h-screen items-center justify-center bg-brand-bg px-4">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-soft">
         <div className="text-center">
-          <img src="/logo-talenscan.png" alt="Talenscan" className="mx-auto h-16 w-auto" />
-          <h1 className="mt-4 text-xl font-semibold text-brand-black">Ingresá a TalenScan</h1>
+          <img src="/logo-talenscan.png" alt="TalentScan" className="mx-auto h-16 w-auto" />
+          <h1 className="mt-4 text-xl font-semibold text-brand-black">Ingresá a TalentScan</h1>
           <p className="mt-1 text-sm text-brand-grayMid">Acceso con tu cuenta Microsoft 365 corporativa.</p>
         </div>
 

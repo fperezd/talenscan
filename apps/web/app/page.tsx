@@ -19,7 +19,7 @@ const accionesRapidas = [
   },
   {
     title: "Evaluar candidatos",
-    description: "Sube CVs y genera Evaluación 360 Talenscan con evidencia.",
+    description: "Sube CVs y genera Evaluación 360 TalentScan con evidencia.",
     href: "/mandatos",
     icon: Sparkles,
   },
@@ -42,7 +42,7 @@ export default function InicioPage() {
     <AppShell>
       <PageHeader
         eyebrow="Inicio"
-        title="Bienvenido a Talenscan"
+        title="Bienvenido a TalentScan"
         description="Transforma mandatos de búsqueda, CVs y criterios en inteligencia accionable: prioriza candidatos, gestiona pipelines y presenta informes profesionales al cliente."
         actions={
           <a

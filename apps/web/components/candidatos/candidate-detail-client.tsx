@@ -506,7 +506,7 @@ export function CandidateDetailClient({ candidateId: propId }: CandidateDetailCl
         <div className="grid gap-5 lg:grid-cols-[1fr_2fr]">
           <article className="rounded-2xl border border-brand-blue/30 bg-brand-blueSoft/40 p-5 shadow-soft">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-blue">
-              Recomendación Talenscan
+              Recomendación TalentScan
             </p>
             <h3 className="mt-1 text-lg font-semibold text-brand-black">
               {latestEvaluation.recommendation || "Revisar evaluación"}

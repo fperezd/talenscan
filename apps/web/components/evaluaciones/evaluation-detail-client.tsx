@@ -404,7 +404,7 @@ export function EvaluationDetailClient({ evaluationId: propId }: EvaluationDetai
           </div>
           <div className="min-w-0">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-blue">
-              Evaluación 360 Talenscan
+              Evaluación 360 TalentScan
             </p>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight text-brand-black">
               {item.score_category}
@@ -964,7 +964,7 @@ export function EvaluationDetailClient({ evaluationId: propId }: EvaluationDetai
       ) : null}
 
       <footer className="rounded-2xl border border-slate-100 bg-slate-50/40 p-4 text-[11px] text-brand-grayMid">
-        Informe generado por Talenscan a partir del perfil objetivo del cargo, el perfil del candidato y
+        Informe generado por TalentScan a partir del perfil objetivo del cargo, el perfil del candidato y
         el modelo de evaluación configurado. La evaluación debe ser revisada por el consultor responsable
         antes de ser compartida con el cliente. Modelo: {item.model_version} · Prompt: {item.prompt_version}.
       </footer>

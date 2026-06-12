@@ -202,7 +202,7 @@ export function CandidateCompareClient({ mandateId: propId }: CandidateCompareCl
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [addToRoomOpen, setAddToRoomOpen] = useState(false);
-  const [shareTitle, setShareTitle] = useState("Shortlist Talenscan");
+  const [shareTitle, setShareTitle] = useState("Shortlist TalentScan");
   const [shareMessage, setShareMessage] = useState(
     "Hola, te comparto el shortlist de candidatos para esta posición. Por favor revisa cada perfil y márcalo según tu interés. Quedo atento a tu feedback."
   );
@@ -355,7 +355,7 @@ export function CandidateCompareClient({ mandateId: propId }: CandidateCompareCl
     setError(null);
     try {
       const body: Record<string, unknown> = {
-        title: shareTitle.trim() || "Shortlist Talenscan",
+        title: shareTitle.trim() || "Shortlist TalentScan",
         message_to_client: shareMessage,
         show_scores: shareShowScores,
         evaluation_ids: evaluationIds,

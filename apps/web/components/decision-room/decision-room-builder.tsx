@@ -1357,7 +1357,7 @@ function CreateRoomModal({
   onClose: () => void;
   onCreated: (room: ClientShortlist) => void;
 }) {
-  const [title, setTitle] = useState("Shortlist Talenscan");
+  const [title, setTitle] = useState("Shortlist TalentScan");
   const [introMessage, setIntroMessage] = useState("");
   const [accessCodeRequired, setAccessCodeRequired] = useState(true);
   const [showScores, setShowScores] = useState(false);
@@ -1595,7 +1595,7 @@ ${codeLine}
 ${expiresLine}
 
 Saludos,
-Equipo Talenscan`;
+Equipo TalentScan`;
 
   async function copy(value: string) {
     try {

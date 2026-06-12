@@ -69,7 +69,7 @@ class ClientShortlist(Base):
         ForeignKey("search_mandates.id"), nullable=False, index=True
     )
     public_token: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
-    title: Mapped[str] = mapped_column(String(200), nullable=False, default="Shortlist Talenscan")
+    title: Mapped[str] = mapped_column(String(200), nullable=False, default="Shortlist TalentScan")
     message_to_client: Mapped[str] = mapped_column(Text, nullable=False, default="")
     show_scores: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     expires_at: Mapped[datetime | None] = mapped_column(

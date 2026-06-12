@@ -26,7 +26,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(message || "Error de comunicacion con Talenscan API");
+    throw new Error(message || "Error de comunicacion con TalentScan API");
   }
 
   if (response.status === 204) {

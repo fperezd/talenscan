@@ -45,7 +45,7 @@ export function AddToRoomModal({
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<"existing" | "new">("new");
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
-  const [newTitle, setNewTitle] = useState("Shortlist Talenscan");
+  const [newTitle, setNewTitle] = useState("Shortlist TalentScan");
   const [accessCodeRequired, setAccessCodeRequired] = useState(true);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function AddToRoomModal({
           {
             method: "POST",
             body: JSON.stringify({
-              title: newTitle || "Shortlist Talenscan",
+              title: newTitle || "Shortlist TalentScan",
               access_code_required: accessCodeRequired,
               evaluation_ids: evaluationIds,
             }),

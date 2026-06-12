@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <PageHeader
         eyebrow="Evaluar candidatos"
         title="Carga de CVs y Evaluación 360"
-        description="Sube CVs, genera el perfil estructurado del candidato y obtén la Evaluación 360 Talenscan."
+        description="Sube CVs, genera el perfil estructurado del candidato y obtén la Evaluación 360 TalentScan."
       />
       <MandatoTabs />
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">

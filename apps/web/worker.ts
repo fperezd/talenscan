@@ -1,5 +1,5 @@
 /**
- * Talenscan Cloudflare Worker.
+ * TalentScan Cloudflare Worker.
  *
  * Reescribe rutas dinámicas (p.ej. /mandatos/42) hacia el HTML estático
  * exportado por Next (generateStaticParams sólo genera /mandatos/demo).

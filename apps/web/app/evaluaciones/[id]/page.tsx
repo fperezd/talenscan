@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     <AppShell>
       <PageHeader
         eyebrow="Evaluación 360"
-        title="Evaluación 360 Talenscan"
+        title="Evaluación 360 TalentScan"
         description="Score explicable por dimensión, brechas críticas, evidencia del CV y preguntas sugeridas para entrevista."
       />
       <EvaluationDetailClient evaluationId={id} />

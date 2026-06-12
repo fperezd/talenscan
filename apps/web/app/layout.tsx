@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Talenscan — Inteligencia de talento",
+  title: "TalentScan — Inteligencia de talento",
   description: "Plataforma B2B para inteligencia de talento, evaluación 360 y pipeline de búsqueda ejecutiva.",
   icons: {
     icon: [
