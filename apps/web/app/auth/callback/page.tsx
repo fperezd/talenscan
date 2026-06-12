@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { setToken } from "@/lib/auth";
 
 const ERROR_LABELS: Record<string, string> = {
-  dominio_de_consumo: "Usá un correo corporativo (no gmail/outlook/etc.).",
+  dominio_de_consumo: "Usa un correo corporativo (no gmail/outlook/etc.).",
   google_sin_workspace: "La cuenta de Google debe ser de Google Workspace (empresa).",
   microsoft_cuenta_personal: "La cuenta de Microsoft debe ser corporativa, no personal.",
   cuenta_no_empresarial: "Solo se permiten cuentas de empresa.",
