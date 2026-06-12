@@ -82,11 +82,11 @@ export function Sidebar() {
           )}
         >
           <img
-            src="/logo-talenscan.png"
+            src={collapsed ? "/favicon.png" : "/logo-talenscan.png"}
             alt="TalentScan"
             className={cn(
               "w-auto transition-all duration-200",
-              collapsed ? "h-12" : "h-40"
+              collapsed ? "h-8" : "h-12"
             )}
           />
         </Link>
